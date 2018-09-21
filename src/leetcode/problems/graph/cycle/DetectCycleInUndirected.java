@@ -1,0 +1,96 @@
+package leetcode.problems.graph.cycle;
+
+import java.util.LinkedList;
+
+public class DetectCycleInUndirected {
+
+    // A Java Program to detect cycle in an undirected graph
+    // This class represents a directed graph using adjacency list
+    // representation
+    static class Graph
+    {
+        private int v_size;   // No. of vertices
+        private LinkedList<Integer> adj[]; // Adjacency List Represntation
+
+        // Constructor
+        Graph(int v_size) {
+            this.v_size = v_size;
+            adj = new LinkedList[v_size];
+            for(int i = 0; i< v_size; ++i)
+                adj[i] = new LinkedList<>();
+        }
+
+        // Function to add an edge into the graph
+        void addEdge(int v,int w) {
+            adj[v].add(w);
+            adj[w].add(v);
+        }
+
+        // A recursive function that uses visited[] and parent to detect
+        // cycle in subgraph reachable from vertex v.
+        Boolean isCyclicUtil(int v, boolean visited[], int parent)
+        {
+            // Mark the current node as visited
+            visited[v] = true;
+
+            final LinkedList<Integer> adjacents = adj[v];
+            for (int index : adjacents) {
+                // If an adjacent is not visited, then recur for that
+                // adjacent
+                if (!visited[index])
+                {
+                    if (isCyclicUtil(index, visited, v))
+                        return true;
+                }
+
+                // If an adjacent is visited and not parent of current
+                // vertex, then there is a cycle.
+                else if (index != parent)
+                    return true;
+            }
+            return false;
+        }
+
+        // Returns true if the graph contains a cycle, else false.
+        Boolean isCyclic()
+        {
+            // Mark all the vertices as not visited and not part of
+            // recursion stack
+            boolean visited[] = new boolean[v_size];
+
+            // Call the recursive helper function to detect cycle in
+            // different DFS trees
+            for (int u = 0; u < v_size; u++)
+                if (!visited[u]) // Don't recur for u if already visited
+                    if (isCyclicUtil(u, visited, -1))
+                        return true;
+
+            return false;
+        }
+    }
+
+
+    // Driver method to test above methods
+    public static void main(String args[])
+    {
+        // Create a graph given in the above diagram
+        Graph g1 = new Graph(5);
+        g1.addEdge(1, 0);
+        g1.addEdge(0, 2);
+        g1.addEdge(2, 1);
+        g1.addEdge(0, 3);
+        g1.addEdge(3, 4);
+        if (g1.isCyclic())
+            System.out.println("Graph contains cycle");
+        else
+            System.out.println("Graph doesn't contains cycle");
+
+        Graph g2 = new Graph(3);
+        g2.addEdge(0, 1);
+        g2.addEdge(1, 2);
+        if (g2.isCyclic())
+            System.out.println("Graph contains cycle");
+        else
+            System.out.println("Graph doesn't contains cycle");
+    }
+}
