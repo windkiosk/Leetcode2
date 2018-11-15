@@ -13,17 +13,13 @@ public class P206_ReverseLinkedList {
     }
 
     public ListNode reverseList(ListNode head) {
-        if (head == null || head.next == null) return head;
-
-        ListNode last = null;
-        ListNode curr = head;
-
-        while (curr != null) {
-            ListNode temp = curr.next;
-            curr.next = last;
-            last = curr;
-            curr = temp;
+        ListNode current = null;
+        while (head != null) {
+            ListNode temp = head.next;
+            head.next = current;
+            current = head;
+            head = temp;
         }
-        return last;
+        return current;
     }
 }
